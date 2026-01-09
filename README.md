@@ -1,4 +1,4 @@
-# Copilot Instructions for Hashing Machine Project
+## Hashing Machine
 
 ## Architecture Overview
 This is a single-file C program (`src/main.c`) implementing a console-based hash table with a menu-driven interface. The program uses Windows-specific APIs for console output and screen clearing.
