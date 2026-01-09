@@ -1,6 +1,21 @@
 #include <stdio.h>
 #include <windows.h>
 
+#define TABLE_SIZE 10
+
+int hash_table[TABLE_SIZE];
+int probing_count[TABLE_SIZE];
+
+void initializeTable() {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        hash_table[i] = -1;
+        probing_count[i] = 0;
+    }
+}
+
+int hash_function(int key) {
+    return key % TABLE_SIZE;
+
 void greet(){
     printf("╔═════════════════════════════════════════════════════════════════════════╗\n");
     printf("║                                                                         ║\n");
@@ -13,23 +28,17 @@ void greet(){
     printf("║                           -+-+- MACHINE  -+-+-                          ║\n");
     printf("╚═════════════════════════════════════════════════════════════════════════╝\n\n");
 
-    printf("\t[1] Insert Elements\n");
-    printf("\t[2] Display Hash Table\n");
-    printf("\t[3] Search Element\n");
-    printf("\t[4] Exit Program\n\n");
-} 
-
-int hash_function(){
-
 }
 
 int main(){
     // To set console output special characters
     SetConsoleOutputCP(CP_UTF8);
+    initialize_table();
 
     // Variable setting
     char confirmation;
     int userchoice = 0;
+    int key;
 
     do{
         greet();
@@ -46,16 +55,33 @@ int main(){
 
         switch(userchoice){
             case 1:
-
-            break;
+                printf("\n\tEnter number of keys: ");
+                scanf("%d", &num_to_insert);
+                system("cls");
+                break;
 
             case 2:
-
-            break;
+                if (num_to_insert <= 0) {
+                    printf("\n\tPlease use Option 1 first to set number of keys!\n");
+                } else {
+                    printf("\n\tEnter %d keys: ", num_to_insert);
+                    for(int i = 0; i < num_to_insert; i++) {
+                        scanf("%d", &key);
+                        insert(key);
+                    }
+                    display();
+                }
+                system("pause");
+                system("cls");
+                break;
 
             case 3:
-
-            break;
+                printf("\n\tSearch: ");
+                scanf("%d", &key);
+                search(key);
+                system("pause");
+                system("cls");
+                break;
 
             case 4:
                 while(1) {
