@@ -8,7 +8,8 @@ int hash_table[TABLE_SIZE];
 int probing_count[TABLE_SIZE];
 
 void initializeTable() {
-    for (int i = 0; i < TABLE_SIZE; i++) {
+    int i;
+    for (i = 0; i < TABLE_SIZE; i++) {
         hash_table[i] = -1;
         probing_count[i] = 0;
     }
@@ -18,7 +19,6 @@ int hash_function(int key) {
     return key % TABLE_SIZE;
 }
 
-// Requirement: Linear Probing
 void insert(int key) {
     int index = hash_function(key);
     int probes = 1;
@@ -26,17 +26,17 @@ void insert(int key) {
     while (hash_table[index] != -1) {
         index = (index + 1) % TABLE_SIZE;
         probes++;
-        if (probes > TABLE_SIZE) return; // Table full
+        if (probes > TABLE_SIZE) return;
     }
     hash_table[index] = key;
     probing_count[index] = probes;
 }
 
-// Requirement: Search and report index
 void search(int key) {
     int index = hash_function(key);
     int start = index;
     int found = 0;
+
     do {
         if (hash_table[index] == key) {
             printf("\t\t╔═════════════════════════════╗\n");
@@ -48,15 +48,15 @@ void search(int key) {
         if (hash_table[index] == -1) break;
         index = (index + 1) % TABLE_SIZE;
     } while (index != start);
-    
+
     if (!found) {
-            printf("\t\t╔═════════════════════════════╗\n");
-            printf("\t\t       %d not found!\n", key, index);
-            printf("\t\t╚═════════════════════════════╝\n");
+        printf("\t\t╔═════════════════════════════╗\n");
+        printf("\t\t       %d not found!\n", key);
+        printf("\t\t╚═════════════════════════════╝\n");
     }
 }
 
-void error(){
+void error() {
     printf("\t\t\t╔══════════════════════════════════════╗\n");
     printf("\t\t\t║  Invalid input. Enter valid field!!  ║\n");
     printf("\t\t\t╚══════════════════════════════════════╝\n");
@@ -78,96 +78,89 @@ void greet() {
 int main() {
     SetConsoleOutputCP(CP_UTF8);
 
-    label: 
     char confirmation;
-    int n = 0, key = 0, search_key = 0;
-    bool exit = true;
+    int n, key, search_key;
+    bool exit;
 
-    while (1) {
-        system("cls");
-        initializeTable();
-        greet();
+label:
+    exit = true;
+    n = key = search_key = 0;
 
-        while(exit){
-            // 1. INPUT PHASE 
-            printf("Enter number of keys: ");
-            if (scanf(" %d", &n) < 1 || n > 10) {
-                while (getchar() != '\n'); 
-                error();
-                n = 0;
-            }
-            else {
-                printf("\n");
-                for (int i = 0; i < n; i++) {
-                    printf("Enter keys: ");
-                    if (scanf(" %d", &key) != 1){
-                        while (getchar() != '\n'); 
-                        error();
-                        key = 0;
-                        i--;
-                    }
-                    else{
-                        insert(key);
-                    }
-                }
-                while(1){
-                    printf("\nSearch: ");
-                    if (scanf(" %d", &search_key) != 1){
-                        while (getchar() != '\n'); 
-                        error();
-                        search_key = 0;
-                    }
-                    else{
-                        exit = false;
-                        break;
-                    }
-                }
-            }
-        }
+    system("cls");
+    initializeTable();
+    greet();
 
-        // 2. OUTPUT PHASE
-        printf("\n╔════════════════════════════════════════════════════════════╗\n");
-        printf("║ Hash Table:  \t\t      Number of probing              ║\n");
-        printf("╠════════════════════════════════════════════════════════════╣");
-        for (int i = 0; i < TABLE_SIZE; i++) {
-            if (hash_table[i] == -1) {
-                printf("\n║ Index %d: %-50d║", i, hash_table[i]);
-            } else {
-                // If probes > 1, it indicates a collision was resolved
-                if (probing_count[i] > 1)
-                    printf("\n║ Index %d: %-20d %d assuming only\t\t     ║", i, hash_table[i], probing_count[i]);
-                else
-                    printf("\n║ Index %d: %-50d║", i, hash_table[i]);
-            }
-        }
-
-        printf("\n╚════════════════════════════════════════════════════════════╝\n\n");
-
-        search(search_key);
-
-        // 3. EXIT OR PROCEED PHASE
-        while (1) {
-            printf("\nDo you want to try again? (Y/N): ");
-            scanf(" %c", &confirmation);
+    while (exit) {
+        printf("Enter number of keys: ");
+        if (scanf("%d", &n) != 1 || n > 10) {
             while (getchar() != '\n');
+            error();
+        } else {
+            int i;
+            printf("\n");
+            for (i = 0; i < n; i++) {
+                printf("Enter keys: ");
+                if (scanf("%d", &key) != 1) {
+                    while (getchar() != '\n');
+                    error();
+                    i--;
+                } else {
+                    insert(key);
+                }
+            }
 
-            if (confirmation == 'y' || confirmation == 'Y') {
-                printf("\t\t\t╔═════════════════════════════╗\n");
-                printf("\t\t\t║  Restarting the program...  ║\n");
-                printf("\t\t\t╚═════════════════════════════╝\n");
-                Sleep(1000);
-                goto label;
-            } 
-            else if (confirmation == 'n' || confirmation == 'N') {
-                printf("\t\t\t╔══════════════════════════╗\n");
-                printf("\t\t\t║  Exiting the program...  ║\n");
-                printf("\t\t\t╚══════════════════════════╝\n");
-                return 0;
-            } else {
-                error();
+            while (1) {
+                printf("\nSearch: ");
+                if (scanf("%d", &search_key) != 1) {
+                    while (getchar() != '\n');
+                    error();
+                } else {
+                    exit = false;
+                    break;
+                }
             }
         }
     }
 
-    return 0;
+    printf("\n╔════════════════════════════════════════════════════════════╗\n");
+    printf("║ Hash Table:  \t\t      Number of probing              ║\n");
+    printf("╠════════════════════════════════════════════════════════════╣");
+
+    {
+        int i;
+        for (i = 0; i < TABLE_SIZE; i++) {
+            if (hash_table[i] == -1)
+                printf("\n║ Index %d: %-50d║", i, hash_table[i]);
+            else if (probing_count[i] > 1)
+                printf("\n║ Index %d: %-20d %d assuming only\t\t     ║",
+                       i, hash_table[i], probing_count[i]);
+            else
+                printf("\n║ Index %d: %-50d║", i, hash_table[i]);
+        }
+    }
+
+    printf("\n╚════════════════════════════════════════════════════════════╝\n\n");
+
+    search(search_key);
+
+    while (1) {
+        printf("\nDo you want to try again? (Y/N): ");
+        scanf(" %c", &confirmation);
+        while (getchar() != '\n');
+
+        if (confirmation == 'Y' || confirmation == 'y') {
+            printf("\t\t\t╔═════════════════════════════╗\n");
+            printf("\t\t\t║  Restarting the program...  ║\n");
+            printf("\t\t\t╚═════════════════════════════╝\n");
+            Sleep(1000);
+            goto label;
+        } else if (confirmation == 'N' || confirmation == 'n') {
+            printf("\t\t\t╔══════════════════════════╗\n");
+            printf("\t\t\t║  Exiting the program...  ║\n");
+            printf("\t\t\t╚══════════════════════════╝\n");
+            return 0;
+        } else {
+            error();
+        }
+    }
 }
