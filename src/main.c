@@ -48,6 +48,7 @@ void search(int key) {
         if (hash_table[index] == -1) break;
         index = (index + 1) % TABLE_SIZE;
     } while (index != start);
+    
     if (!found) {
             printf("\t\t╔═════════════════════════════╗\n");
             printf("\t\t       %d not found!\n", key, index);
